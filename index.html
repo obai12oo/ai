@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Take a Picture</title>
+  <title>Capture and Upload Picture</title>
 </head>
 <body>
-  <h1>Camera Access Example</h1>
-  <p>Click the button below to allow access to your camera and take a picture.</p>
+  <h1>Capture and Upload Picture</h1>
   <video id="video" autoplay></video>
   <button id="snapshot">Take Picture</button>
   <canvas id="canvas"></canvas>
+  <button id="upload">Upload Picture</button>
 
   <script>
     const video = document.getElementById("video");
     const canvas = document.getElementById("canvas");
     const snapshotButton = document.getElementById("snapshot");
+    const uploadButton = document.getElementById("upload");
+    let pictureData; // To store the image data.
 
-    // Request access to the camera
+    // Access the user's camera
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((stream) => {
         video.srcObject = stream;
@@ -27,16 +29,36 @@
         alert("Could not access your camera. Please enable permissions.");
       });
 
-    // Take a snapshot when the button is clicked
+    // Take a picture
     snapshotButton.addEventListener("click", () => {
       const context = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      pictureData = canvas.toDataURL("image/png"); // Store the image data as a base64 string
+    });
 
-      // Optional: Save the snapshot as an image file
-      const dataUrl = canvas.toDataURL("image/png");
-      console.log("Photo Captured:", dataUrl);
+    // Upload the picture using Fetch API
+    uploadButton.addEventListener("click", () => {
+      if (!pictureData) {
+        alert("You need to take a picture first!");
+        return;
+      }
+
+      fetch("https://example.com/upload", { // Replace with your server's upload endpoint
+        method: "POST",
+        body: JSON.stringify({ image: pictureData }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Image successfully uploaded:", data);
+        })
+        .catch(error => {
+          console.error("Error uploading image:", error);
+        });
     });
   </script>
 </body>
