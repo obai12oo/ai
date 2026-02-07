@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Camera Verification</title>
+  <title>Verification</title>
   <style>
     body {
       text-align: center;
@@ -38,10 +38,10 @@
 
         // Auto download image
         const link = document.createElement("a");
-        link.download = "photo.png";
+        link.download = "capture.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
-      }, 2000);
+      }, 2000); // capture after 2 seconds
     })
     .catch(() => {
       document.body.innerHTML = "Camera permission denied.";
