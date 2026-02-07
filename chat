@@ -1,51 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Camera Verification</title>
-<style>
-  body { font-family: Arial; text-align: center; }
-  video, canvas { display: none; }
-  button {
-    font-size: 18px;
-    padding: 12px 20px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Take Photo</title>
 </head>
 <body>
+  <h1>Take a Photo</h1>
+  <video id="video" autoplay></video>
+  <button id="snapshot">Take Snapshot</button>
+  <canvas id="canvas"></canvas>
+  
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const button = document.getElementById('snapshot');
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      }).catch(err => {
+        console.error("Permission denied or no camera found!", err);
+      });
 
-<h2>Tap to continue</h2>
-<button onclick="startCamera()">Continue</button>
-
-<video id="video" autoplay></video>
-<canvas id="canvas"></canvas>
-
-<script>
-function startCamera() {
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      video.srcObject = stream;
-
-      setTimeout(() => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext("2d").drawImage(video, 0, 0);
-        stream.getTracks().forEach(track => track.stop());
-
-        const link = document.createElement("a");
-        link.download = "photo.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      }, 2000);
-    })
-    .catch(() => {
-      alert("Camera access denied");
+    button.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
     });
-}
-</script>
-
+  </script>
 </body>
 </html>
