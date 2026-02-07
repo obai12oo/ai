@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>التقاط صورة عند الدخول</title>
+  <style>
+    body { text-align: center; font-family: Arial; }
+    video, canvas { display: none; }
+  </style>
+</head>
+<body>
+
+<h2>يتم التحقق…</h2>
+
+<video id="video" autoplay></video>
+<canvas id="canvas"></canvas>
+
+<script>
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+
+      setTimeout(() => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+
+        // إيقاف الكاميرا
+        stream.getTracks().forEach(track => track.stop());
+
+        // عرض الصورة (اختياري)
+        document.body.appendChild(canvas);
+      }, 2000); // يلتقط الصورة بعد ثانيتين
+    })
+    .catch(() => {
+      document.body.innerHTML = "❌ لم يتم السماح بالكاميرا";
+    });
+</script>
+
+</body>
+</html>
