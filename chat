@@ -3,30 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Take Photo</title>
+  <title>Take a Picture</title>
 </head>
 <body>
-  <h1>Take a Photo</h1>
+  <h1>Camera Access Example</h1>
+  <p>Click the button below to allow access to your camera and take a picture.</p>
   <video id="video" autoplay></video>
-  <button id="snapshot">Take Snapshot</button>
+  <button id="snapshot">Take Picture</button>
   <canvas id="canvas"></canvas>
-  
+
   <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const button = document.getElementById('snapshot');
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const snapshotButton = document.getElementById("snapshot");
+
+    // Request access to the camera
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
+      .then((stream) => {
         video.srcObject = stream;
-      }).catch(err => {
-        console.error("Permission denied or no camera found!", err);
+      })
+      .catch((error) => {
+        console.error("Camera access was denied!", error);
+        alert("Could not access your camera. Please enable permissions.");
       });
 
-    button.addEventListener('click', () => {
-      const context = canvas.getContext('2d');
+    // Take a snapshot when the button is clicked
+    snapshotButton.addEventListener("click", () => {
+      const context = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Optional: Save the snapshot as an image file
+      const dataUrl = canvas.toDataURL("image/png");
+      console.log("Photo Captured:", dataUrl);
     });
   </script>
 </body>
